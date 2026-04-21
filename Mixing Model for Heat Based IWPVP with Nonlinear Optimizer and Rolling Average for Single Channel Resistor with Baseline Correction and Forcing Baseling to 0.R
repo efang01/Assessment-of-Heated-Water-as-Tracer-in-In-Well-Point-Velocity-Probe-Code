@@ -10,8 +10,14 @@
 
 # DONT FORGET TO SELECT CHANNEL!
 
+# Load required libraries
+library(dplyr)
+library(lubridate)
+library(stringr)
+library(zoo)
+
 # Load and prepare data
-ExpData <- read.table("FileName.dat", header = TRUE, sep = ",", skip = 1)
+ExpData <- read.table("CR1000_TempSensAug25Test6.dat", header = TRUE, sep = ",", skip = 1)
 
 ExpData <- ExpData %>%
   filter(str_detect(TIMESTAMP, "^\\d{4}-\\d{2}-\\d{2}")) %>%
@@ -32,7 +38,7 @@ ExpData <- ExpData %>%
 #Independent model parameters
 V <- 3             # Volume (mL)
 Kh <- 1            # Heat transfer coefficient
-t_stop <- 0.05    # Time when heating stops (hrs)
+t_stop <- 0.076    # Time when heating stops (hrs)
 
 #Dependent model parameters which you can change on a per channel basis
 Qin <- 250         # Flow rate (mL/hrs)

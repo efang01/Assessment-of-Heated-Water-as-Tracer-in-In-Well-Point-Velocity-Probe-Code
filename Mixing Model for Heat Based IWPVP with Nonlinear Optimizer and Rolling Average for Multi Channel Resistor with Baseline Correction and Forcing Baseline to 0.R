@@ -10,8 +10,14 @@
 
 # DONT FORGET TO SELECT CHANNEL!
 
+# Load required libraries
+library(dplyr)
+library(lubridate)
+library(stringr)
+library(zoo)
+
 # Load and prepare data
-ExpData <- read.table("FileName.dat", header = TRUE, sep = ",", skip = 1)
+ExpData <- read.table("CR1000_TempSensFeb10Test1.dat", header = TRUE, sep = ",", skip = 1)
 
 ExpData <- ExpData %>%
   filter(str_detect(TIMESTAMP, "^\\d{4}-\\d{2}-\\d{2}")) %>%
