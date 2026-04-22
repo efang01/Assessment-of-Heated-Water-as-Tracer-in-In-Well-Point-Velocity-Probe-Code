@@ -66,6 +66,7 @@ while(ci[i,2]<b_up){
 }
 tc
 
+# Find probe MDL
 b_up<-round(min(ci$upr),4)
 
 # Plot calibration thresholds
