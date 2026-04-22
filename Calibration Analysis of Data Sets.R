@@ -23,13 +23,13 @@ xconfint<-seq(0,70,by=0.0001)
 
 conf_interval <- predict(regcurrent, newdata=(data.frame(x=xconfint)), 
                          interval="confidence", level = 0.95)
-
 par(mfrow=c(1,2))
 
+# Plot Calibration line
 plot(x,y, xlab="Outside Well", ylab="In Probe",
      pch=16,cex.main=2,main=paste("Calibration Line"))
 
-abline(lm(y~x),lty=3,lwd=2)
+abline(lm(y~x), col="black", lty=3,lwd=2)
 lines(xconfint, conf_interval[,2], col="black", lty=2)
 lines(xconfint, conf_interval[,3], col="black", lty=2)
 
@@ -79,15 +79,15 @@ mtext(paste("LoQ =", tc), side=3, line=0, col="red", font=4, cex=1.3, adj=0)
 mtext(paste("MDL =", mdl), side=3, line=0, col="blue", font=4, cex=1.3 ,adj=0.5)
 mtext(paste("ProbeMDL =", b_up), side=3, line=0, col="black", font=4, cex=1.3, adj=1)
 
-#Pplot upper and lower bounds
-lines(xconfint, ci[,2], col="black", lty=2)
-lines(xconfint, ci[,3], col="#00CD00", lty=2)
-lines(xconfint, ci[,4], col="#00CD00", lty=2)
+#Plot upper and lower bounds
+lines(xconfint, ci[,2], col="black", lty=2, lwd=2)
+lines(xconfint, ci[,3], col="#00CD00", lty=2, lwd=2)
+lines(xconfint, ci[,4], col="#00CD00", lty=2, lwd=2)
 
 # Plot probe mdl, loq, mdl
-abline(h=b_up,col="black",lty=1)
-abline(v=tc,col="red",lty=1)
-abline(v=mdl,col="blue",lty=1)
+abline(h=b_up, col="black", lty=1, lwd=2)
+abline(v=tc, col="red", lty=1, lwd=2)
+abline(v=mdl, col="blue", lty=1, lwd=2)
 
 # Print coefficients
 summary(regcurrent)
