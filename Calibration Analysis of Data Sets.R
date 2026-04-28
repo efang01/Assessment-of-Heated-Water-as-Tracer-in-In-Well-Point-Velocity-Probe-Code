@@ -8,7 +8,7 @@
 ################################################################################
 
 # Load and prepare data
-inputpvp<-read.csv("4ChannelData2ExpDAY.csv", stringsAsFactors = F)
+inputpvp<-read.csv("4ChannelData3ExpDAY.csv", stringsAsFactors = F)
 x<-(inputpvp$SandFlux)
 y<-(inputpvp$ProbeFlux)
 
@@ -31,8 +31,8 @@ title(xlab="Outside Well", line=2.5, cex.lab=2, font.lab=1)   # move up/down
 title(ylab="In Probe", line=2.3, cex.lab=2, font.lab=1)
 
 # Axis major ticks
-axis(1, at = pretty(x, n = 8))
-axis(2, at = pretty(y, n = 8))
+axis(1, at = pretty(x, n = 6))
+axis(2, at = pretty(y, n = 6))
 # Optional axis minor ticks
 #axis(1, at = pretty(x, n = 20), tcl = -0.25, labels = FALSE)
 #axis(2, at = pretty(y, n = 20), tcl = -0.25, labels = FALSE)
@@ -42,12 +42,20 @@ lines(xconfint, conf_interval[,2], col="#00CD00", lty=2, lwd=4)
 lines(xconfint, conf_interval[,3], col="black", lty=2, lwd=2)
 
 # R-squared
-rsq <- summary(regcurrent)$r.squared
-text(min(x), max(y)*0.95, pos=4, font=4, paste("R² =",(rsq)))
+rsq <- (summary(regcurrent)$r.squared)
+
+# Safe plotting positions
+xpos <- min(x, na.rm=TRUE) + 0.05*diff(range(x, na.rm=TRUE))
+ypos <- max(y, na.rm=TRUE) - 0.05*diff(range(y, na.rm=TRUE))
 
 # Equation label (handles + / - automatically)
 eqn <- paste0("y = ", m, "x ", ifelse(b >= 0, "+ ", "- "), abs(b))
-text(min(x), max(y)*0.98, pos=4, font=4, eqn)
+text(xpos, ypos, labels = eqn, pos=4, font=4, cex=1.5)
+
+# R²
+text(xpos, ypos - 0.05*diff(range(y, na.rm=TRUE)),
+     labels = paste("R² =", format(rsq, digits=12, scientific = FALSE)),
+     pos=4, font=4, cex=1.5)
 
 ci<-as.data.frame(conf_interval)
 ci$x<-xconfint
