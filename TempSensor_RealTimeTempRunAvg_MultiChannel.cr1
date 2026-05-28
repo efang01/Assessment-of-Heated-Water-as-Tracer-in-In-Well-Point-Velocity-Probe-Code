@@ -1,0 +1,103 @@
+'CR1000
+'Created by Ellis Fangmann (2.3)
+
+'Declare Variables and Units
+Public Batt_Volt
+Public HalfBR(4)
+Public avgHalfBR(4)
+Public Temperature_C(4) 'Added variable for temperature in Celsius
+Public Temperature_F(4) 'Added variable for temperature in Fahrenheit
+
+Dim i 
+
+'Steinhart-Hart coefficients
+Const A = 1.129241E-3
+Const B = 2.341077E-4
+Const C = 8.775468E-8
+
+'Temp Conversion
+Const Ve = 1 'Excitation voltage in V
+
+Units Batt_Volt=Volts
+Units HalfBR=mV
+Units Temperature_C=DegC 'Units for temperature
+Units Temperature_F=DegF 
+
+'Define Data Tables
+DataTable(TempSens,True,-1)
+    DataInterval(0,2,sec,10)
+    Minimum(1,Batt_Volt,FP2,False,False)
+    Sample(4,HalfBR(),IEEE4)
+    Sample(4,avgHalfBR(),IEEE4)
+    Sample(4,Temperature_C(),IEEE4) 'Log temperature
+EndTable
+
+'Main Program
+BeginProg
+    Scan(2,sec,25,0)
+        'Default Datalogger Battery Voltage measurement Batt_Volt:
+        Battery(Batt_Volt)
+
+        'Half-bridge measurements for 4 sensors
+        BrHalf(HalfBR(1),1,mV2500,1,1,1,2500,True,0,_60Hz,1.0,0.0)
+        BrHalf(HalfBR(2),1,mV2500,2,1,1,2500,True,0,_60Hz,1.0,0.0)
+        BrHalf(HalfBR(3),1,mV2500,3,1,1,2500,True,0,_60Hz,1.0,0.0)
+        BrHalf(HalfBR(4),1,mV2500,4,1,1,2500,True,0,_60Hz,1.0,0.0)
+
+	'Temperature Conversion Logic for sensor 1
+	Dim Vout1, RT1, TK1
+	Vout1 = HalfBR(1)
+	RT1 = 24900 * ((Ve / Vout1) - 1)
+	TK1 = 1 / (A + B * Ln(RT1) + C * Ln(RT1)^3)
+	Temperature_C(1) = TK1 - 273.15
+	Temperature_F(1) = (Temperature_C(1) * 9 / 5) + 32
+
+	'Repeat for sensor 2
+	Dim Vout2, RT2, TK2
+	Vout2 = HalfBR(2)
+	RT2 = 24900 * ((Ve / Vout2) - 1)
+	TK2 = 1 / (A + B * Ln(RT2) + C * Ln(RT2)^3)
+	Temperature_C(2) = TK2 - 273.15
+	Temperature_F(2) = (Temperature_C(2) * 9 / 5) + 32
+
+	'Sensor 3
+	Dim Vout3, RT3, TK3
+	Vout3 = HalfBR(3)
+	RT3 = 24900 * ((Ve / Vout3) - 1)
+	TK3 = 1 / (A + B * Ln(RT3) + C * Ln(RT3)^3)
+	Temperature_C(3) = TK3 - 273.15
+	Temperature_F(3) = (Temperature_C(3) * 9 / 5) + 32
+
+	'Sensor 4
+	Dim Vout4, RT4, TK4
+	Vout4 = HalfBR(4)
+	RT4 = 24900 * ((Ve / Vout4) - 1)
+	TK4 = 1 / (A + B * Ln(RT4) + C * Ln(RT4)^3)
+	Temperature_C(4) = TK4 - 273.15
+	Temperature_F(4) = (Temperature_C(4) * 9 / 5) + 32
+
+
+
+	'Collect running average of data to quiet noise
+        If HalfBR(1) <> NAN Then 'call AvgRun conditionally
+     			 AvgRun(avgHalfBR(1),1,HalfBR(1),60)
+   	EndIf
+
+	If HalfBR(2) <> NAN Then 'call AvgRun conditionally
+     			 AvgRun(avgHalfBR(2),1,HalfBR(2),60)
+   	EndIf
+
+	If HalfBR(3) <> NAN Then 'call AvgRun conditionally
+     			 AvgRun(avgHalfBR(3),1,HalfBR(3),60)
+   	EndIf
+
+	If HalfBR(4) <> NAN Then 'call AvgRun conditionally
+     			 AvgRun(avgHalfBR(4),1,HalfBR(4),60)
+   	EndIf
+    
+
+	'Log Data
+        CallTable(TempSens)
+    NextScan
+
+EndProg
