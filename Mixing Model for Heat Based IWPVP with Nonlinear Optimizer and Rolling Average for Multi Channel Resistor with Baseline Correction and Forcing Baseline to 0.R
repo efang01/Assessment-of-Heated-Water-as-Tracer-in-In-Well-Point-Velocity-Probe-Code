@@ -17,7 +17,7 @@ library(stringr)
 library(zoo)
 
 # Load and prepare data
-ExpData <- read.table("CR1000_TempSensFeb10Test1.dat", header = TRUE, sep = ",", skip = 1)
+ExpData <- read.table("CR1000_TempSensApril27Test4.dat", header = TRUE, sep = ",", skip = 1)
 
 ExpData <- ExpData %>%
   filter(str_detect(TIMESTAMP, "^\\d{4}-\\d{2}-\\d{2}")) %>%
@@ -25,7 +25,7 @@ ExpData <- ExpData %>%
     TIMESTAMP = ymd_hms(TIMESTAMP),
     mins = as.numeric(difftime(TIMESTAMP, first(TIMESTAMP), units = "mins")),
     hrs = mins / 60,
-    Tmeas = as.numeric(Temperature_C.1.) #Change the # in Temperature_C.#. to pick which channel you want analyzed
+    Tmeas = as.numeric(Temperature_C.3.) #Change the # in Temperature_C.#. to pick which channel you want analyzed
   )
 
 # Apply rolling mean after time processing
@@ -38,7 +38,7 @@ ExpData <- ExpData %>%
 #Independent model parameters
 V <- 3            # Volume (mL)
 Kh <- 1           # Heat transfer coefficient
-t_stop <- 0.05    # Time when heating stops (hrs)
+t_stop <- 0.0538  # Time when heating stops (hrs)
 
 #Dependent model parameters which you can change on a per channel basis
 Qin <- 250        # Flow rate (mL/hrs)

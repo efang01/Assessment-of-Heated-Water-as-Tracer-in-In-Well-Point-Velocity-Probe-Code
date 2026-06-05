@@ -117,17 +117,17 @@ W2 <- Atot2/(Atot1+Atot2)
 
 #Calculate apparent theta angle
 #Edit lines 120 & 121 to input the calculated Qins for BOTH channels
-Qin1 <-  1355.95 #Velocity measured (mL/hr)
-Qin2 <-  1229.28 #Velocity measured (mL/hr)
+qin1 <-  2008.81 #velocity measured 
+qin2 <-  1821.15 #velocity measured
 
 #The angle is from whichever weight and velocity are on the num/Qin1/W1 of equation!!!
-num <- Qin1 * W1
-den <- Qin2 * W2
+num <- qin1 * W1
+den <- qin2 * W2
 Θapp_rad <- atan((num)/(den))
 Θapp_deg <- Θapp_rad * 180 / pi
 
 #Calculate velocity of IWPVP
-Viwpvp <- sqrt((Qin1 * sin(Θapp_rad))^2 + (Qin2 * cos(Θapp_rad))^2)
+Viwpvp <- sqrt((qin1 * sin(Θapp_rad))^2 + (qin2 * cos(Θapp_rad))^2)
 
 # Print values
 print(Viwpvp)
